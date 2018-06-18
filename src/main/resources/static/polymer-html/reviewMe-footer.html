@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<!-- Element for maintaining footer -->
+<dom-module id="reviewme-footer">
+  <template>
+    <style>
+    	:host {
+	        display: block;
+      	}
+      	.ReviewMeFooter {
+		  position: fixed;
+		  bottom: 0;
+		  left: 0;
+  		  right: 0;
+		  width: 100%;
+		  background: #60C36E;
+		  text-align: center;
+		}
+    </style>
+	<p class="ReviewMeFooter">All Rights Reserved &copy; Registered @ Review Me 2018-19</p>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ReviewMeFooter extends Polymer.Element {
+      static get is() { return 'reviewme-footer'; }
+      static get properties() {}
+    }
+
+    window.customElements.define(ReviewMeFooter.is, ReviewMeFooter);
+  </script>
+</dom-module>

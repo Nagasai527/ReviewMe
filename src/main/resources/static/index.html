@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>Review Me</title>
+    <meta name="description" content="polymer-2-test description">
+
+    <link rel="manifest" href="/manifest.json">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+	
+    <link rel="import" href="/polymer-html/reviewMe-productRev.html">
+    <link rel="import" href="/polymer-html/reviewMe-header.html">
+    <link rel="import" href="/polymer-html/reviewMe-footer.html">
+  </head>
+  <body>
+  	<header>
+  		<reviewme-header> </reviewme-header>
+  	</header>
+  	<article>
+  		<!-- Custom element for displaying product review --> 
+	    <reviewme-productrev> </reviewme-productrev>
+    </article>
+    <footer>
+    	<reviewme-footer> </reviewme-footer>
+    </footer>
+  </body>
+</html>

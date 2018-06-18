@@ -1,0 +1,243 @@
+<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+
+
+<dom-module id="reviewme-productrev">
+  <template>
+    <style>
+    	:host {
+    		display: block;
+    	}
+    	nav {
+    		float: left;
+    		border-right: 1px solid;
+    		padding-right: 2%;
+    		background-color: #808080;
+    		text-align: justify;
+    	}
+    	nav p {
+    		cursor: pointer;
+    	}
+    	.review {
+    		border-bottom: 1px solid gray;
+    		width: 33%;
+    	}
+    	.revDesc {
+    		padding-left: 5%;
+    	}
+    	.postedBy a {
+    		text-decoration: none;
+    		color: #68228b;
+    	}
+    	
+    </style>
+   	<!-- <nav>
+   		<p id="home" on-click="">Home</p>
+   		<p on-click="">About Us</p>
+   	</nav> -->
+    
+    <!-- This ajax call fetches all products needed for drop-down -->
+    <iron-ajax
+               id="getProducts"
+               auto
+               url="reviewMe/products"
+               params='{}'
+               handle-as="json"
+               on-error="handleErrorResponse"
+               on-response="readProdList"
+               >
+    </iron-ajax>
+    
+    <iron-ajax
+               id="getChildProd"
+               url="reviewMe/products/[[parentProdId]]"
+               params='{}'
+               handle-as="json"
+               on-error="handleErrorResponse"
+               on-response="readChildProdRsp"
+               >
+    </iron-ajax>
+
+    <!--  -->
+    <iron-ajax
+               id="prodReview"
+               url="reviewMe/product/[[productId]]"
+               params='{}'
+               handle-as="json"
+               on-error="handleErrorResponse"
+               on-response="readProdRvwRsp"
+               >
+    </iron-ajax>
+    
+    <!-- This template displays primary details of the customer -->
+	    <section id="customerInfo" class="custProdDetails">
+	      <paper-dropdown-menu label="Product" name="relationshipKey">
+     			<paper-listbox slot="dropdown-content" on-iron-select="prodChg">
+	      			<template is="dom-repeat" items="[[productList]]">
+	      				<paper-item value="[[item.id]]">[[item.prodName]]</paper-item>
+	      			</template>
+	      		</paper-listbox>
+	      	</paper-dropdown-menu>
+	      	
+	      	<template is="dom-if" if="{{showSubProd}}" >
+	      		<template is="dom-if" if="{{showEmptyProdMsg}}"><br/>No Models found under this product.</template>
+	      		<template is="dom-if" if="{{!showEmptyProdMsg}}">
+			      	<paper-dropdown-menu label="Model">
+		     			<paper-listbox slot="dropdown-content" on-iron-select="modelChg">
+			      			<template is="dom-repeat" items="[[childProductList]]">
+			      				<paper-item value="[[item.id]]">[[item.prodName]]</paper-item>
+			      			</template>
+			      		</paper-listbox>
+			      	</paper-dropdown-menu>
+		      	</template>
+	      	</template>
+		</section>
+		
+		<template is="dom-if" if="{{showProdReview}}" >
+			<template is="dom-repeat" items="[[prodRvws]]" >
+				<br/><span><b>Product Type:</b> [[item.description]] </span><br/>
+				<template is="dom-if" if="{{showEmptyMsg}}"> <br/>No reviews found.</template>
+				<template is="dom-repeat" items="[[item.reviews]]" as="prodRvw" >
+					<div class="review">
+						<span class="postedBy"> 
+							<br/>
+							<a href="mailto:[[prodRvw.posted_by.email]]?Subject=ReviewMeApp-Regarding%20[[item.prodName]]%20Review" title="mailTo:[[prodRvw.posted_by.email]]" target="_top">
+								<b>[[prodRvw.posted_by.name]]</b>
+							</a>
+						</span>
+						<br/>
+						<p class="revDesc">[[prodRvw.description]]</div>
+					<br/>
+				</template>
+			</template>
+		</template>
+  
+ </template>
+
+<!-- Custom element creation happens here -->
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ReviewMeProductRev extends Polymer.Element {
+      static get is() { return 'reviewme-productrev'; }
+      static get properties() {
+        return {
+          productList: {
+        	  type: Object
+          },
+          childProductList: {
+        	  type: Object
+          },
+          productId: {
+        	  type: Number
+          },
+          parentProdId: {
+        	  type: Number
+          },
+          showProdReview : {
+        	  type: Boolean,
+        	  value: true,
+        	  reflectToAttribute: true
+          },
+          prodRvws: {
+        	  type: Object
+          },
+          showEmptyMsg: {
+        	  type: Boolean,
+        	  value: false,
+        	  reflectToAttribute: true
+          },
+          showSubProd: {
+        	  type: Boolean,
+        	  value: false,
+        	  reflectToAttribute: true
+          },
+          showEmptyProdMsg: {
+        	  type: Boolean,
+        	  value: false,
+        	  reflectToAttribute: true
+          }
+        };
+      }
+      ready() {
+    	  super.ready();
+      }
+
+      readProdList(e) {
+    	  console.log("Prod List Resp >>");
+    	  console.log(e.detail.response);
+    	  this.productList = e.detail.response;
+      }
+      
+      readChildProdRsp(e) {
+    	  console.log("Prod List Resp >>");
+    	  console.log(e.detail.response);
+    	  this.childProductList = e.detail.response;
+    	  if(null == this.childProductList) {
+    		  this.showEmptyProdMsg = true;
+    	  } else {
+    		  this.childProductList.length == 0 ? this.showEmptyProdMsg = true : this.showEmptyProdMsg = false;
+    	  }
+      }
+      
+      readProdRvwRsp(e) {
+    	  console.log("Review Resp >>");
+    	  console.log(e.detail.response);
+    	  this.prodRvws = e.detail.response;
+    	  console.log("prod reviews length "+this.prodRvws.length);
+    	  if(null == this.prodRvws) {
+    		  this.showEmptyMsg = true;
+    	  } else {
+    		  this.prodRvws[0].reviews.length == 0 ? this.showEmptyMsg = true : this.showEmptyMsg = false;
+    	  }
+      }
+      
+      handleErrorResponse(e) {
+   	  	  console.log(e);
+	   	  console.log(e.detail);
+	   	  console.log(e.detail.error);
+	   	  console.log(e.detail.error.message);
+	   	  console.log(e.detail.request);
+	   	  console.log(e.detail.response);
+	   	  console.log(e.detail.request.response);
+      }
+      
+      prodChg(e) {
+    	var selectedItem = e.target.selectedItem;
+    	if (selectedItem) {
+    		this.parentProdId = selectedItem.value;
+	    	this.$.getChildProd.generateRequest();
+	    	this.showSubProd = true;
+    	} else {
+    		this.showSubProd = false;
+    	}
+      }
+      
+      modelChg(e) {
+    	var selectedItem = e.target.selectedItem;
+      	if (selectedItem) {
+      		this.productId = selectedItem.value;
+  	    	this.$.prodReview.generateRequest();
+  	    	this.showProdReview = true;
+      	} else {
+      		this.prodRvws = [];
+      	}
+      }
+      
+    }
+    
+    window.customElements.define(ReviewMeProductRev.is, ReviewMeProductRev);
+  </script>
+</dom-module>
