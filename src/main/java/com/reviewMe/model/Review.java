@@ -22,6 +22,8 @@ import org.springframework.data.annotation.CreatedDate;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author nnaruman
  *
@@ -34,24 +36,29 @@ public class Review implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@ApiModelProperty(notes="Database generated review identifier")
 	private Long reviewId;
 	
 	@Column(name="description")
+	@ApiModelProperty(notes="Review entered by the user")
 	private String description;	
 	
 	@ManyToOne
 	@JsonBackReference
 	@JoinColumn(name="product_id",nullable=false) 
+	@ApiModelProperty(notes="The product ID of respective review")
 	private Product productId;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "posted_date", nullable = false, updatable = false)
 	@CreatedDate
+	@ApiModelProperty(notes="Review posted date")
 	private Date postedDate;
 	
 	@JsonProperty("posted_by")
 	@ManyToOne
 	@JoinColumn(name="posted_by",nullable=false)
+	@ApiModelProperty(notes="Review posted by")
 	private User postedBy;
 
 

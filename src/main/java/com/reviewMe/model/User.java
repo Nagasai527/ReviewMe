@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author nnaruman
  *
@@ -29,17 +31,21 @@ public class User implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@ApiModelProperty(notes="Database generated user identifier")
 	private Long userId;
 	
 	@Column(name="name")
+	@ApiModelProperty(notes="The user name")
 	private String name;
 	
 	@Column(name="email")
+	@ApiModelProperty(notes="Email ID of the user")
 	private String email;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on", nullable = false, updatable = false)
 	@CreatedDate
+	@ApiModelProperty(notes="User created on")
 	private Date createdOn;
 
 	/**

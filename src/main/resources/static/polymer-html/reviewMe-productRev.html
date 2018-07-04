@@ -216,7 +216,9 @@
       
       prodChg(e) {
     	var selectedItem = e.target.selectedItem;
+    	this.prodRvws = [];
     	if (selectedItem) {
+    		this.childProductList = [];
     		this.parentProdId = selectedItem.value;
 	    	this.$.getChildProd.generateRequest();
 	    	this.showSubProd = true;
@@ -227,12 +229,11 @@
       
       modelChg(e) {
     	var selectedItem = e.target.selectedItem;
+    	this.prodRvws = [];
       	if (selectedItem) {
       		this.productId = selectedItem.value;
   	    	this.$.prodReview.generateRequest();
   	    	this.showProdReview = true;
-      	} else {
-      		this.prodRvws = [];
       	}
       }
       

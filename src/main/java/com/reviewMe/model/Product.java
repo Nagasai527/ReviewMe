@@ -18,6 +18,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author nnaruman
  *
@@ -30,24 +32,30 @@ public class Product implements Serializable {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@ApiModelProperty(notes="Database generated product identifier")
 	private Long id;
 	
 	@Column(name="prod_Name")
+	@ApiModelProperty(notes="The product name")
 	private String prodName;
 	
 	@Column(name="parent_product_id")
+	@ApiModelProperty(notes="The parent product name if any else null")
 	private Long parentProduct;
 	
 	@Column(name="description")
+	@ApiModelProperty(notes="The product description")
 	private String description;
 	
 	@OneToMany(mappedBy = "productId")
 	@JsonManagedReference
+	@ApiModelProperty(notes="Reviews against respective product")
 	private Set<Review> reviews;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_date", nullable = false, updatable = false)
 	@CreatedDate
+	@ApiModelProperty(notes="The product addition date to the app")
 	private Date createdDate;
 
 	/**
